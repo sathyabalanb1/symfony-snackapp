@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %} 
+{% form_theme registerinfo 'bootstrap_4_layout.html.twig' %}
+
+{% block title %}Registration{% endblock %}
+
+{% block body %}
+    <h3>User Register</h3>
+   
+    {{ form_start(registerinfo) }}
+    {{ form_widget(registerinfo) }}
+    <button class="btn btn-success">{{ button_label|default('Save') }}</button>
+    <input type="hidden" name="token" value="{{ csrf_token('authenticate') }}">
+    {{ form_end(registerinfo) }}
+    
+    <ul>
+    {% for field, errorMessage in errors | default('')%}
+        <li>{{ field }}: {{ errorMessage }}</li>
+    {% endfor %}
+    </ul>
+     
+    
+{% endblock %}
+
+

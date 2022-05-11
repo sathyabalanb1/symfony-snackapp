@@ -1,0 +1,8 @@
+#register
+trans_reg_head: REGISTER
+trans_reg_email: Email
+trans_reg_fn: First Name
+trans_reg_ln: Last Name
+trans_reg_pwd: Password
+trans_reg_rpwd: Repeat Password
+trans_reg_btn: Register

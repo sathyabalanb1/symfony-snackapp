@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %} 
+{% form_theme snackinfo 'bootstrap_4_layout.html.twig' %}
+
+{% block title %}Add Snack{% endblock %}
+
+{% block body %}
+    <h3>Add Snack</h3>
+   
+    {{ form_start(snackinfo) }}
+    {{ form_widget(snackinfo) }}
+    <button class="btn btn-success">{{ button_label|default('Add') }}</button>
+    <input type="hidden" name="token" value="{{ csrf_token('authenticate') }}">
+    {{ form_end(snackinfo) }}
+    
+    <ul>
+    {% for field, errorMessage in errors | default('')%}
+        <li>{{ field }}: {{ errorMessage }}</li>
+    {% endfor %}
+    </ul>
+     
+    
+{% endblock %}
+
+
