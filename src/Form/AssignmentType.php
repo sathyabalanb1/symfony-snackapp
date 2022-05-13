@@ -16,11 +16,16 @@ class AssignmentType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('presentdate', DateType::class,['widget'=>'single_text','format'=>'yyyy-MM-dd'])
+        ->add('presentdate', DateType::class,['widget'=>'single_text','format'=>'yyyy-MM-dd','translation_domain' => 'messages',
+            'label'=>'trans_assign_date','data'   => new \DateTime(),
+                'attr'   => ['min' => ( new \DateTime() )->format('Y-m-d')]],'')
            // ->add('createdtime')
            // ->add('modifiedtime')
-            ->add('snack',EntityType::class,['class'=>Snacks::class, 'choice_label'=>'snackname'])
-            ->add('vendor',EntityType::class,['class'=>Vendor::class, 'choice_label'=>'vendorname'])
+        ->add('snack',EntityType::class,['class'=>Snacks::class, 'choice_label'=>'snackname',
+               'translation_domain' => 'messages',
+               'label'  =>'trans_assign_snack'     
+        ]) 
+            ->add('vendor',EntityType::class,['class'=>Vendor::class, 'choice_label'=>'vendorname','label'=>'trans_assign_vendor'])
         ;
     }
 

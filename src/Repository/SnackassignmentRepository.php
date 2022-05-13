@@ -7,6 +7,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Validator\Constraints\Date;
 
 /**
  * @extends ServiceEntityRepository<Snackassignment>
@@ -74,5 +75,22 @@ class SnackassignmentRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
     }
-    */
+    */   
+    public function findAssignmentdetails()
+    {
+        $entityManager = $this->getEntityManager();
+        $from = new \DateTime(date('Y-m-d'));
+        $qb = $this->createQueryBuilder("e");
+        $qb->andWhere('e.presentdate = :from')->setParameter('from', $from );
+        return $qb->getQuery()->getResult();
+        
+        
+       /* $query = $entityManager->createQuery(
+            'SELECT snack_id
+            FROM App\Entity\Snackassignment 
+            WHERE presentdate="'.date('Y-m-d').'"');
+            
+            // returns an array of Product objects
+            return $query->getResult();*/
+    }
 }

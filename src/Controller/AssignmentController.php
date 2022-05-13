@@ -48,20 +48,19 @@ class AssignmentController extends AbstractController
             // $urs->setRole($this->getDoctrine()->getManager()->getReference(Roles::class,'2')); //doubt
             //$ename = $request->request->get("employeename");
             $pdate=$form->get('presentdate')->getData();
-            $snackid=$form->get('snack_id')->getData();
-            $vendorid=$form->get('vendor_id')->getData();
+            $snackid=$form->get('snack')->getData();
+            $vendorid=$form->get('vendor')->getData();
             
             
             $input = ['snackid' => $snackid, 'vendorid'=>$vendorid, 'presentdate'=>$pdate];
             
             $constraints = new Assert\Collection([
                 'snackid' => [new Assert\NotBlank],
-                'vendorid' => [new Assert\Email(), new Assert\notBlank],
+                'vendorid' => [new Assert\notBlank],
                 'presentdate' => [new Assert\notBlank],
             ]);
             
             $violations = $validator->validate($input, $constraints);
-            
             
             if (count($violations) > 0) {
                 
@@ -77,7 +76,7 @@ class AssignmentController extends AbstractController
                     // $violation->getMessage());
                 }
                 // return $this->render('Register/registerfail.html.twig',['registerfail' => $errorMessages]);
-                return $this->render('assignment/assignment.html.twig',['errors' => $errorMessages,'assignmentinfo' => $form->createView()]);
+  return $this->render('assignment/assignment.html.twig',['errors' => $errorMessages,'assignmentinfo' => $form->createView()]);
                 
                 
             }
@@ -89,7 +88,7 @@ class AssignmentController extends AbstractController
                 'Your post was added'
                 );
             
-            return $this->redirectToRoute('app_snack');
+            return $this->redirectToRoute('app_assignment');
             
             //return $this->redirectToRoute('app_register1');
         }
