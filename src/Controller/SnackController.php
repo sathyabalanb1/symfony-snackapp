@@ -36,6 +36,15 @@ class SnackController extends AbstractController
     public function new(Request $request, SnacksRepository $sksRepository, ValidatorInterface $validator): Response
     {
         // creates a task object and initializes some data for this example
+        $logged=$this->get('session')->get('logged');
+        
+        $roleid=$this->get('session')->get('roleid');
+        
+        if($logged!=true && $roleid!=1)
+        {
+            return $this->redirectToRoute('dssnacker_login');
+            
+        }
         $sks = new Snacks();
         $form =$this->createForm(SnackType::class,$sks);
         
@@ -54,7 +63,6 @@ class SnackController extends AbstractController
             $constraints = new Assert\Collection([
                 'sname' => [new Assert\NotBlank]
             ]);
-            
             $violations = $validator->validate($input, $constraints);
             
             
@@ -76,18 +84,53 @@ class SnackController extends AbstractController
                 
                 
             }
+            $sname=$form->get('snackname')->getData();
+            $availablesnack = $this->getDoctrine()->getRepository(Snacks::class)->findOneBy([
+                'snackname' => $sname
+            ]);
+            if($availablesnack){
+                return $this->render('snack/snack.html.twig',['errors' => 'The Submitted Snack is Already Available', 
+                    'snackinfo' => $form->createView()
+                ]);
+            }
+            
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($sks);
             $entityManager->flush();
             $this->addFlash(
-                'success',
-                'Your post was added'
+                'newsnacksuccess',
+                'New Snack was Added Successfully'
                 );
             
-            return $this->redirectToRoute('app_snack');
+            return $this->redirectToRoute('app_snackform');
             
             //return $this->redirectToRoute('app_register1');
         }
-        return $this->render('snack/snack.html.twig',['snackinfo' => $form->createView()]);
+        return $this->render('snack/snack.html.twig',['snackinfo' => $form->createView(),'errors'=>'']);
     }
+    
+    /**
+     * @Route("/snacktable", name="app_snack_table")
+     */
+    public function displaySnackstable():Response
+    {
+        $logged=$this->get('session')->get('logged');
+        
+        $roleid=$this->get('session')->get('roleid');
+        
+        if($logged!=true && $roleid!=1)
+        {
+            return $this->redirectToRoute('dssnacker_login');
+            
+        }
+        $repository=$this->getDoctrine()->getRepository(Snacks::class);
+        
+        $snacks=$repository->findAll();
+        
+      //  dd($snacks);
+        
+        return $this->render('snack/snacktable.html.twig',['controller_name'=>'SnackController','snacks'=>$snacks]);
+        
+    }
+    
 }

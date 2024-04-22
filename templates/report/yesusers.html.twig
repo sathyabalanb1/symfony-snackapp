@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %} 
+{% block javascripts %} 
+<script language = "javascript" 
+      src = "https://code.jquery.com/jquery-2.2.4.min.js"></script>
+
+<script language = "javascript">  
+
+$(document).ready(function(){
+   
+$("#loadstudent").on("click", function(event){  
+$.ajax({  
+url:'/report/ajax',  
+type:'POST',   
+dataType:'json',  
+async:true,
+data: JSON.stringify( { "first-name": $('#first-name').val(), "last-name": $('#last-name').val() } ),
+
+success: function(data, status) { 
+
+ var e = $('<tr><th>Sl.No</th><th>UserID</th><th>EmployeeName</th></tr>'); 
+ 
+$('#student').html('');  
+$('#student').append(e);  
+
+for(i = 0; i < data.length; i++) {  
+student = data[i]; 
+ 
+var e = $('<tr><td id = "name"></td><td id = "address"></td></tr>');
+
+$('#name', e).html(student['name']); 
+
+$('#address', e).html(student['address']); 
+
+$('#student').append(e); 
+
+} 
+
+error : function(xhr, textStatus, errorThrown) {  
+                  alert('Ajax request failed.');  
+               }  
+            });  
+         });  
+      });  
+   </script> 
+{% endblock %}  
+
+  
+ 
+ 
+
+
+
+
+ 
+
+

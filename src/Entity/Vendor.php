@@ -25,9 +25,14 @@ class Vendor
     private $vendorname;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=1000)
      */
     private $vendorlocation;
+    
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $cnumber;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -77,6 +82,19 @@ class Vendor
 
         return $this;
     }
+    
+    public function getCnumber(): ?string
+    {
+        return $this->cnumber;
+    }
+    
+    public function setCnumber(string $cnumber): self
+    {
+        $this->cnumber = $cnumber;
+        
+        return $this;
+    }
+    
 
     public function getCreatedtime(): ?\DateTimeInterface
     {

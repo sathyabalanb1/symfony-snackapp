@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+{% if app.session %}
+        <div class="mb-3">
+            Hi {{ app.session.get('employeename') }}
+        </div>
+{% endif %}
+
+{% if info %}
+        <div class="alert alert-danger">{{ info }}</div>
+    {% endif %}
+    
+{% if value == true %}
+
+<div>
+
+<p>You Have Chosen Yes for Today's Snack</p>
+
+</div>
+
+{% endif %}
+
+{% if value == false %}
+
+<div>
+
+<p>You Have Chosen No for Today's Snack</p>
+
+</div>
+
+{% endif %}
+    
+{% endblock %}

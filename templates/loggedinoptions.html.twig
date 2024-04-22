@@ -1,0 +1,37 @@
+
+        
+        <ul id="nav">
+        <li><a href="{{ path('app_snackassignment_count') }}" id="Adminpage">Home</a></li>
+
+        <li>
+            <a href="" id="Snack">Snacks ▾</a>
+            <ul class="dropdown">
+            	<li><a href="{{ path('snacks_info') }}" id="Snack">ChooseSnack</a></li>
+                <li><a href="{{ path('app_snack_table') }}">SnacksList</a></li>
+                <li><a href="{{ path('app_snackform') }}"">AddSnack</a></li>
+            </ul>
+        </li>
+        <li>
+        
+        <a href="" id="Assignment">Assignments ▾</a>
+        <ul class="dropdown">
+                <li><a href="{{ path('app_assignment_table') }}">AssignmentList</a></li>
+                <li><a href="{{ path('app_snackassignment') }}">AssignSnack</a></li>
+            </ul>
+        </li>
+        <li>
+        
+        <a href="" id="Vendor">Vendor ▾</a>
+        <ul class="dropdown">
+                <li><a href="{{ path('app_vendor_table') }}">VendorList</a></li>
+                <li><a href="{{ path('app_vendorform') }}">AddVendor</a></li>
+            </ul>
+        </li>
+        <li><a href="{{ path('app_user_table') }}" id="Userpage">Users</a></li>
+        <li><a href="{{ path('app_report_form') }}" id="Count">Report</a></li>
+        <li><a href="{{ path('app_logout') }}">Logout</a></li>
+
+    </ul>
+    <p id="employeename">{{app.session.get('employeename')}}</p>
+    
+

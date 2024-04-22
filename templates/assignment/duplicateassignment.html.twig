@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+{% if app.session %}
+        <div class="mb-3">
+            <p>Hi <b><span style="color:dodgerblue;">{{ app.session.get('employeename') }}</span></b></p>
+        </div>
+    {% endif %}
+    
+    
+{% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+    
+{% endblock %}

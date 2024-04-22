@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+{% if info %}
+        <div><h3><center><b>{{ info }}</b><center></h3></div>
+    {% endif %}
+ <div class="container">   
+<div class="row middleimg">
+  <div class="col-lg-6">
+  <img  src="{{ asset('build/images/Samosa.jpg') }}" alt="Samosa">
+  </div>
+   <div class="col-lg-6">
+  <img  src="{{ asset('build/images/micher.jpg') }}" alt="Micher"> 
+  </div>
+  </div>
+
+<div class="row middleimg">
+  <div class="col-lg-6">
+  <img src="{{ asset('build/images/cake.jpeg') }}" alt="Cake">
+  </div>
+   <div class="col-lg-6">
+<img src="{{ asset('build/images/bunbutterjam.png') }}" alt="BunButterJam">  
+  </div>
+  </div>
+  </div>
+{% endblock %}
+
+  
+  
+  
+

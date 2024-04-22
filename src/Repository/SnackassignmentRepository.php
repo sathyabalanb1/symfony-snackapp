@@ -8,6 +8,8 @@ use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Validator\Constraints\Date;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
 
 /**
  * @extends ServiceEntityRepository<Snackassignment>
@@ -80,6 +82,7 @@ class SnackassignmentRepository extends ServiceEntityRepository
     {
         $entityManager = $this->getEntityManager();
         $from = new \DateTime(date('Y-m-d'));
+        //dd($from);
         $qb = $this->createQueryBuilder("e");
         $qb->andWhere('e.presentdate = :from')->setParameter('from', $from );
         return $qb->getQuery()->getResult();
@@ -92,5 +95,38 @@ class SnackassignmentRepository extends ServiceEntityRepository
             
             // returns an array of Product objects
             return $query->getResult();*/
+    }
+    public function findAssignmentCount()
+    {
+        $entityManager = $this->getEntityManager();
+        
+        $now=date('Y-m-d');
+        
+        $query = $entityManager-> createQuery(
+            'select count(s.id) as count, s.presentdate
+             FROM App\Entity\Snackassignment s
+             where s.presentdate=:cdate'
+            )->setParameter('cdate', $now);
+            
+           
+          //  return $query->getResult()>getSingleScalarResult();
+          //  return $query->getSingleScalarResult();
+           return $query->getSingleResult();
+            
+    }
+    
+    public function getAssignmentlist ($date1, $date2)
+    {
+        $entityManager = $this->getEntityManager();
+        /*$query = $entityManager->createQuery('select IDENTITY (a.vendor),count(a.vendor) as cnt FROM App\Entity\Snackassignment a
+            where a.presentdate BETWEEN :startdate AND :enddate GROUP BY a.vendor')->setParameter('startdate',$date1
+                )->setParameter('enddate', $date2);*/
+        
+        $query = $entityManager->createQuery('select  IDENTITY (a.vendor) FROM App\Entity\Snackassignment a
+            where a.presentdate BETWEEN :startdate AND :enddate')->setParameter('startdate',$date1
+                )->setParameter('enddate', $date2);
+                
+                return $query->getResult();
+                
     }
 }

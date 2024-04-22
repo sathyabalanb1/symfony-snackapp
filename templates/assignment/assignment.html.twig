@@ -3,12 +3,27 @@
 
 {% block title %}Snack Assignment{% endblock %}
 
+{% block stylesheets %}
+<style>
+.myformfield {
+   width: 400px;
+}
+
+.flash-notice { color: red } 
+
+</style>
+{% endblock %}
+
 {% block body %}
-    <h3>Snack Assignment</h3>
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height:20vh;margin-top:50px">
+
+   {# <center><p style="font-weight:bold;color:green">{% trans %} %trans_assign_title% {% endtrans %}</p></center> #}
    
-    {{ form_start(assignmentinfo) }}
+    {{ form_start(assignmentinfo, {'attr':{'class':'border shadow p-3 rounded'}}) }}
+    <center><p style="font-weight:bold;color:green">Assign Snack</p></center>
     {{ form_widget(assignmentinfo) }}
-    <button class="btn btn-success">{{ button_label|default('Submit') }}</button>
+   <center><button class="btn btn-success">{{ button_label|default('Submit') }}</button></center>
     <input type="hidden" name="token" value="{{ csrf_token('authenticate') }}">
     {{ form_end(assignmentinfo) }}
     
@@ -17,6 +32,8 @@
         <li>{{ field }}: {{ errorMessage }}</li>
     {% endfor %}
     </ul>
+    
+</div>
      
     
 {% endblock %}

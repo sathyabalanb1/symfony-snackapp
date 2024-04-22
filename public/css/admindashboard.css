@@ -1,0 +1,75 @@
+.grad1 {
+  height: auto;
+  background-color: red; /* For browsers that do not support gradients */
+  background-image: linear-gradient(to bottom right, #ff9a9e, #fecfef);
+}
+
+.grad2 {
+  height: auto;
+  background-color: red; /* For browsers that do not support gradients */
+  background-image: linear-gradient(to bottom right, #B7F8DB, #50A7C2);
+}
+
+.grad3 {
+  height: auto;
+  background-color: red; /* For browsers that do not support gradients */
+  background-image: linear-gradient(to bottom right, #56C596, #7BE495);
+}
+.grad4 {
+  height: auto;
+  background-color: red; /* For browsers that do not support gradients */
+  background-image: linear-gradient(to bottom right, #FF0000, #FFFFFF);
+}
+.grad5 {
+  height: auto;
+  background-color: red; /* For browsers that do not support gradients */
+  background-image: linear-gradient(to bottom right, #FFFF00, #FFFFFF);
+}
+.grad6 {
+  height: auto;
+  background-color: red; /* For browsers that do not support gradients */
+  background-image: linear-gradient(to bottom right, #56C596, #FFFFFF);
+}
+.bar{
+    fill: steelblue;
+  }
+
+  .bar:hover{
+    fill: brown;
+  }
+
+	.axis {
+	  font: 10px sans-serif;
+	}
+
+	.axis path,
+	.axis line {
+	  fill: none;
+	  stroke: #000;
+	  shape-rendering: crispEdges;
+	}
+
+.blink-text{
+		color: #fff;
+		font-weight: bold;
+		font-size: 14px;
+		animation: blinkingText 2s infinite;
+		animation: blinkingBackground 2s infinite;
+		padding: 2px 4px;
+		display: inline-block;
+		border-radius: 5px;
+	}
+	@keyframes blinkingText{
+		0%		{ color: #10c018;}
+		25%		{ color: #1056c0;}
+		50%		{ color: #ef0a1a;}
+		75%		{ color: #254878;}
+		100%	{ color: #04a1d5;}
+	}
+	@keyframes blinkingBackground{
+		0%		{ background-color: #10c018;}
+		25%		{ background-color: #1056c0;}
+		50%		{ background-color: #ef0a1a;}
+		75%		{ background-color: #254878;}
+		100%	        { background-color: #04a1d5;}
+	}

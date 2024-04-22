@@ -18,21 +18,24 @@ class AssignmentType extends AbstractType
         $builder
         ->add('presentdate', DateType::class,['widget'=>'single_text','format'=>'yyyy-MM-dd','translation_domain' => 'messages',
             'label'=>'trans_assign_date','data'   => new \DateTime(),
-                'attr'   => ['min' => ( new \DateTime() )->format('Y-m-d')]],'')
+            'attr'   => ['min' => ( new \DateTime() )->format('Y-m-d'),'class'=>'myformfield']],'')
            // ->add('createdtime')
            // ->add('modifiedtime')
-        ->add('snack',EntityType::class,['class'=>Snacks::class, 'choice_label'=>'snackname',
+        ->add('snack',EntityType::class,['class'=>Snacks::class,'choice_label'=>'snackname',
                'translation_domain' => 'messages',
-               'label'  =>'trans_assign_snack'     
+               'label'  =>'trans_assign_snack',
+                'placeholder' => '-Select Snack-',
+            'attr'=> array('class'=>'myformfield')       
         ]) 
-            ->add('vendor',EntityType::class,['class'=>Vendor::class, 'choice_label'=>'vendorname','label'=>'trans_assign_vendor'])
+            ->add('vendor',EntityType::class,['class'=>Vendor::class, 'choice_label'=>'vendorname',
+                'label'=>'trans_assign_vendor','placeholder' => '-Select Vendor-','attr'=>array('class'=>'myformfield')])
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults([
-            'data_class' => Snackassignment::class,
-        ]);
-    }
+//     public function configureOptions(OptionsResolver $resolver): void
+//     {
+//         $resolver->setDefaults([
+//             'data_class' => Snackassignment::class,
+//         ]);
+//     }
 }

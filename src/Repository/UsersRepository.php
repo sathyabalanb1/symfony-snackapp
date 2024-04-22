@@ -47,7 +47,8 @@ class UsersRepository extends ServiceEntityRepository
             $this->_em->flush();
         }
     }
-
+    
+    
     // /**
     //  * @return Users[] Returns an array of Users objects
     //  */
@@ -77,13 +78,74 @@ class UsersRepository extends ServiceEntityRepository
     }
     */
     
-    public function makeAdmin(int $userid)
+    /* public function makeAdmin(int $userid):array
+    {
+        $entityManager = $this->getEntityManager();
+        
+        $query = $entityManager->createQuery(update('App\Entity\Users', 'u')
+            ->set('u.role', ':roleid')
+            ->where('u.id = :userid')
+            ->setParameter('roleid', 1)
+            ->setParameter('userid', $userid)
+            ->getQuery();
+        
+            $result = $query->execute();
+            
+            return $result;            
+    }
+    public function removeAdmin(int $userid):array
+    {
+        $entityManager = $this->getEntityManager();
+        
+        $query = $entityManager->createQuery(update('App\Entity\Users', 'u')
+            ->set('u.role', ':roleid')
+            ->where('u.id = :userid')
+            ->setParameter('roleid', 2)
+            ->setParameter('userid', $userid)
+            ->getQuery();
+            
+            $result = $query->execute();
+            
+            return $result;
+    } */
+    
+    public function fetchUserdetails ($email, $pwd):array
+    {
+        $entityManager = $this->getEntityManager();
+        
+           /*  'select s.snackname
+             FROM App\Entity\Snacks s
+             where s.id=:snk'
+            )->setParameter('snk',$snackid); */
+        
+        $query = $entityManager->createQuery(
+            'select s.id,identity(s.role) as rl,s.employeename
+             FROM App\Entity\Users s
+             where s.username=:uname' // AND s.password=:pwd'
+            )->setParameter('uname',$email); //, 'pwd' => $pwd));
+            
+           // dd($query);
+            
+            return $query->getResult();
+    }
+    public function getAllUser()
+    {
+        $entityManager = $this->getEntityManager();
+        $query = $entityManager->createQuery(
+            'select u.id,u.employeename FROM App\Entity\Users u'
+            );
+        return $query->getResult();
+        
+    }
+    public function getAlladminuser()
     {
         $entityManager = $this->getEntityManager();
         
         $query = $entityManager->createQuery(
-            'Update Users SET Roleid=1 Where Userid=$userid'
-            );  
+            'select u.id FROM App\Entity\Users u where u.role=:adminroleid'
+            )->setParameter('adminroleid',1);
+        
             return $query->getResult();
     }
+    
 }

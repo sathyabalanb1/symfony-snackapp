@@ -35,6 +35,15 @@ class VendorController extends AbstractController
     public function new(Request $request, VendorRepository $vrsRepository, ValidatorInterface $validator): Response
     {
         // creates a task object and initializes some data for this example
+        $logged=$this->get('session')->get('logged');
+        
+        $roleid=$this->get('session')->get('roleid');
+        
+        if($logged!=true && $roleid!=1)
+        {
+            return $this->redirectToRoute('dssnacker_login');
+            
+        }
         $vrs = new Vendor();
         $form =$this->createForm(VendorType::class,$vrs);
         
@@ -48,13 +57,14 @@ class VendorController extends AbstractController
             //$ename = $request->request->get("employeename");
             $vname=$form->get('vendorname')->getData();
             $vlocation=$form->get('vendorlocation')->getData();
-                        
+            $vnumber=$form->get('cnumber')->getData();           
             
-            $input = ['vname' => $vname, 'vlocation' => $vlocation];
+            $input = ['vname' => $vname, 'vlocation' => $vlocation, 'vnumber'=>$vnumber];
             
             $constraints = new Assert\Collection([
                 'vname' => [new Assert\NotBlank],
                 'vlocation' => [new Assert\notBlank],
+                'vnumber' => [new Assert\notBlank],
             ]);
             
             $violations = $validator->validate($input, $constraints);
@@ -82,14 +92,37 @@ class VendorController extends AbstractController
             $entityManager->persist($vrs);
             $entityManager->flush();
             $this->addFlash(
-                'success',
-                'Your post was added'
+                'vendoraddsuccess',
+                'New Vendor Was Added Successfully'
                 );
             
-            return $this->redirectToRoute('app_vendor');
+            return $this->redirectToRoute('app_vendor_table');
             
             //return $this->redirectToRoute('app_register1');
         }
         return $this->render('vendor/vendor.html.twig',['vendorinfo' => $form->createView()]);
+    }
+    /**
+     * @Route("/vendortable", name="app_vendor_table")
+     */
+    public function displaySnackstable():Response
+    {
+        $logged=$this->get('session')->get('logged');
+        
+        $roleid=$this->get('session')->get('roleid');
+        
+        if($logged!=true && $roleid!=1)
+        {
+            return $this->redirectToRoute('dssnacker_login');
+            
+        }
+        $repository=$this->getDoctrine()->getRepository(Vendor::class);
+        
+        $vendors=$repository->findAll();
+        
+        // dd($snacks);
+        
+        return $this->render('vendor/vendortable.html.twig',['controller_name'=>'VendorController','vendors'=>$vendors]);
+        
     }
 }

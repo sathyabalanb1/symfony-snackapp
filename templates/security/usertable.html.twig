@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Users Table{% endblock %}
+{% block body %}
+<div>
+<center><p style="font-weight:bold;color:green;font-size:150%;">DS Employee Details</p></center>
+{% set i = 0 %}
+<div class="container">
+<div class="row">
+<div class="col-lg-12">
+<table class="table table-bordered">
+<thead class="table-info">
+<tr>
+<th>Sl.No</th><th>Role</th><th>Employee Name</th><th>Email ID</th><th>Action</th>
+</tr>
+
+</thead>
+
+<tbody>
+{% for user in users %}
+
+     {% set i = i + 1 %}
+
+<tr class="table-primary">
+<td>{{i}}</td>
+{% if (user.role.getId()==1) %}
+<td>Admin</td>
+{% else %}
+<td>User</td>
+{% endif %}
+<td>{{user.employeename}}</td>
+<td>{{user.username}}</td>
+{% if (user.role.getId()==1) %}
+<td>
+<a href="{{ path('app_adminrole_edit', {'id' : user.id}) }}" class="btn btn-primary" onclick="return confirm('Are You Sure to Remove this User from Admin Categor?')">Remove Admin</a>
+</td>
+{% else %}
+<td>
+<a href="{{ path('app_role_edit', {'id' : user.id}) }}" class="btn btn-primary" onclick="return confirm('Are You Sure to Make this User as Admin?')">Make Admin</a>
+</td>
+{% endif %}
+</tr>
+{% endfor %}
+</tbody>
+
+</table>
+</div>
+</div>
+</div>
+</div>
+
+{% endblock %}

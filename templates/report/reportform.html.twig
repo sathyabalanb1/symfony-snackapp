@@ -1,0 +1,220 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+
+<style>
+
+th,td {text-align:center}
+
+p {text-align:center}
+
+table {
+  caption-side: top;
+}
+</style>
+
+
+
+{% endblock %}
+
+{% block javascripts %} 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" ></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<script>
+$(function(){
+  $('#shootdate').daterangepicker({
+  locale:{
+  format:'DD-MM-YYYY'
+  }
+  }
+  );
+});
+
+function fn1()
+{
+$.ajax({ 
+	url:'/report/ajax',  
+	type:'POST',   
+	data : {daterange: $('#shootdate').val()},
+	dataType:   'json',  
+	async:      true, 
+	success: function(data, status) {
+
+	$('.snackwant').html('');  
+        $('.oktable').before("<p class='snackwant' style='color:red'><b>List of Employees Who Want the Snack</b></p>");
+           
+        
+        var e = $('<thead class="table-dark"  ><tr><th width="470px">ID</th><th width="470px">Employeename</th><th width="470px">ChoosenDate</th></tr></thead><tbody class="table-success">'); 
+        $('#user').html('');  
+        $('#user').append(e); 
+        
+        $('.snackdontwant').html('');  
+        $('.notoktable').before("<p class='snackdontwant' style='color:red'><b>List of Employees Who Don't Want the Snack</b></p>");
+
+
+        
+        var d = $('<thead class="table-dark"  ><tr><th width="470px">ID</th><th width="470px">Employeename</th><th width="470px">ChoosenDate</th></tr></thead><tbody class="table-success">'); 
+        $('#notokuser').html('');  
+        $('#notokuser').append(d);
+        
+        poscount=0;
+        negcount=0;
+        
+        for(i = 0; i < data.length; i++) {  
+        student = data[i];
+	var e = $('<tr><td id = "userid" ></td><td id = "username"></td><td id = "selectiondate"></td></tr>');
+        var d = $('<tr><td id = "notokuserid"></td><td id = "notokusername"></td><td id = "notokdate"></td></tr>');
+        
+        
+        
+        if(data[i].isselected != false)
+        {
+        $('#userid', e).html(data[i].id);  
+        $('#username', e).html(data[i].employeename);
+        $('#selectiondate', e).html(data[i].createdtime);    
+        $('#user').append(e);
+        poscount++;  
+        }
+        else
+        {
+        $('#notokuserid', d).html(data[i].id);  
+        $('#notokusername', d).html(data[i].employeename);  
+        $('#notokdate', d).html(data[i].createdtime);  
+        $('#notokuser').append(d);
+        negcount++; 
+        }
+        }
+        
+        if(poscount==0)
+        {
+        $('#user').html("<tr><td class='table-success' colspan='3'>No Records Found</td></tr>");  
+        $('#user').append(e); 
+        }
+        if(negcount==0)
+        {
+        $('#notokuser').html("<tr><td class='table-success' colspan='3'>No Records Found</td></tr>");  
+        $('#notokuser').append(d);
+        }
+        var e = $('</tbody>');
+        $('#user').append(e); 
+        
+        $('.selectioncount').html('');  
+              
+        $('.countinfotable').before("<p class='selectioncount' style='color:red'><b>Count Information Based on the Category</b></p>");
+	var resultcount = '<thead class="table-dark"><tr><th width="470px">Sl.No</th><th width="470px">Category</th><th width="470px">Count</th></tr></thead><tbody class="table-success">';
+	resultcount += '<tr><td id = "slno"></td><td id = "poscategory"></td><td id = "positivevaluecount"></td></tr>';
+	resultcount += '<tr><td>1</td><td>Number of Employeess Who Want the Snack</td><td>'+poscount+'</td></tr>';
+	resultcount += '<tr><td>2</td><td>Number of Employeess Who Dont Want the Snack</td><td>'+negcount+'</td></tr></tbody></table>';
+
+	$('#resultuser').html(resultcount);
+        },  
+        error : function(xhr, textStatus, errorThrown) {  
+                  alert('Ajax request failed.');  
+               }  
+
+
+        
+	});
+}
+
+function fn2()
+{
+$.ajax({ 
+	url:'/noresponsereport/ajax',  
+	type:'POST',   
+	data : {daterange: $('#shootdate').val()},
+	dataType:   'json',  
+	async:      true, 
+	success: function(data, status) {
+        $('.snacknoresponse').html('');  
+        $('.noresponsetable').before("<p class='snacknoresponse' style='color:red'><b>List of Employees Who are All Not Responded</b></p>");
+
+
+        
+        var f = $('<thead class="table-dark"  ><tr><th width="470px">ID</th><th width="470px">Employeename</th><th width="470px">NotrespondedDate</th></tr></thead><tbody class="table-success">'); 
+        $('#noresponseuser').html('');  
+        $('#noresponseuser').append(f);
+         
+
+        for(i = 0; i < data.length; i++) {  
+
+
+        var f = $('<tr><td id = "noresponseuserid"></td><td id = "noresponseusername"></td><td id="noresponsedate"></td></tr>');
+        
+        
+        $('#noresponseuserid', f).html(data[i].id);  
+        $('#noresponseusername', f).html(data[i].employeename); 
+        $('#noresponsedate', f).html(data[i].createdtime);   
+        $('#noresponseuser').append(f);  
+        
+        
+        }
+        
+        if(data.length==0)
+        {
+        $('#noresponseuser').html("<tr><td class='table-success' colspan='3'>No Records Found</td></tr>");  
+        $('#noresponseuser').append(f);
+        }
+        
+        var resultcount = $('<tbody>');
+        var rcount = $('<tr><td id = "slno"></td><td id = "noresponsecategory"></td><td id = "noresponsevalue"></td></tr>');
+        $('#noresponsecategory', rcount).html("Number of Employeess Who Have not Responded for the Snack");
+        $('#slno', rcount).html(3);  
+        $('#noresponsevalue', rcount).html(data.length);
+        var resultcount = $('</tbody>');
+        $('#resultuser').append(rcount);
+        
+        },  
+        error : function(xhr, textStatus, errorThrown) {  
+                  alert('Ajax request failed.');  
+               }  
+        
+	});
+}
+
+
+</script>
+
+<script language = "javascript">  
+$(document).ready(function(){   
+$("#loadreport").on("click", function(event){ 
+
+	
+});
+});
+</script>
+ 
+ 
+{% endblock %}
+
+{% block body %}
+
+
+    <label for="shootdate">Enter the Date:</label><br>
+    <input required type="text" id="shootdate" name="shootdate" id="shootdate" title="Choose your desired date" />
+    
+<br><br>
+   
+<button id="loadreport" class="btn btn-success" onclick="fn1(),fn2()";>{{ button_label|default('Submit') }}</button>
+
+
+<table id="user" class="oktable" border="1">  
+</table> 
+<br><br>
+
+<table id="notokuser" class="notoktable" border="1">  
+</table>
+<br><br> 
+<table id="noresponseuser" class="noresponsetable" border="1">  
+</table>  
+<br><br>
+<table id="resultuser" class="countinfotable" border="1">  
+</table>  
+     
+ 
+{% endblock %}
+
+

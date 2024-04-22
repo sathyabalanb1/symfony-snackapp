@@ -3,12 +3,17 @@
 
 {% block title %}Add Vendor{% endblock %}
 
+{% block stylesheets %}
+
+{% endblock %}
+
 {% block body %}
-    <h3>Add Register</h3>
-   
-    {{ form_start(vendorinfo) }}
+
+    <div class="container d-flex justify-content-center align-items-center" style="min-height:20vh;margin-top:10px">
+    {{ form_start(vendorinfo,{'attr':{'class':'border shadow p-3 rounded'}}) }}
+    <center><p style="font-weight:bold;color:green">Add Vendor</p></center>
     {{ form_widget(vendorinfo) }}
-    <button class="btn btn-success">{{ button_label|default('Submit') }}</button>
+    <center><button class="btn btn-success">{{ button_label|default('Submit') }}</button></center>
     <input type="hidden" name="token" value="{{ csrf_token('authenticate') }}">
     {{ form_end(vendorinfo) }}
     
@@ -17,6 +22,7 @@
         <li>{{ field }}: {{ errorMessage }}</li>
     {% endfor %}
     </ul>
+    </div>
      
     
 {% endblock %}

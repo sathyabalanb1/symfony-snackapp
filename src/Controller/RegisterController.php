@@ -49,16 +49,18 @@ class RegisterController extends AbstractController
     {
         // creates a task object and initializes some data for this example
         $urs = new Users();
+       // dd($urs);
         $form =$this->createForm(RegisterType::class,$urs);
-        // dd($form);
+        // dd($urs);
         
         $form->handleRequest($request); 
         
         if($form->isSubmitted() && $form->isValid()) {
-            
+           // dd($form);
             $urs->setCreatedtime(new \DateTime());
             $roleid = $request->request->get('role_id'); // doubt
-            $urs->setRole($this->getDoctrine()->getManager()->getReference(Roles::class,'2')); //doubt
+            $urs->setRole($this->getDoctrine()->getManager()->getReference(Roles::class,'2'));
+           // dd($urs->setRole($this->getDoctrine()->getManager())); //doubt
             //$ename = $request->request->get("employeename");
             $ename=$form->get('employeename')->getData();
             $uname=$form->get('username')->getData();
@@ -68,15 +70,23 @@ class RegisterController extends AbstractController
             
             $input = ['ename' => $ename, 'uname' => $uname,'pwd'=>$pwd];
             
-            $constraints = new Assert\Collection([
+          /*   $constraints = new Assert\Collection([
                 'pwd' => [new Assert\Length(['min' => 4]), new Assert\NotBlank],
                 'uname' => [new Assert\Email(), new Assert\notBlank],
                 'ename' => [new Assert\notBlank],
-            ]);
+            ]); */
             
+             $constraints = new Assert\Collection([
+                'pwd' => [new Assert\Length(['min' => 4]), new Assert\NotBlank],
+                'uname' => [new Assert\Email(), new Assert\notBlank],
+                 'ename' => [new Assert\notBlank,
+                     new Assert\Regex(['pattern' => '/^[a-zA-Z ]+$/i',
+                     'message'=>'Alphabets and Spaces only allowed'])]
+             ]); 
+            
+           //  new Assert\Regex(['pattern' => '/^[a-zA-Z]+$/i'])]
+             
             $violations = $validator->validate($input, $constraints);
-            
-            
             if (count($violations) > 0) {
                 
                 $accessor = PropertyAccess::createPropertyAccessor();
@@ -84,17 +94,17 @@ class RegisterController extends AbstractController
                 $errorMessages = [];
                 
                 foreach ($violations as $violation) {
-                    
                     $accessor->setValue($errorMessages,$violation->getPropertyPath(),$violation->getMessage());
+                    //dd($errorMessages);
                     
                    // $violation->getPropertyPath(),
-                   // $violation->getMessage());
+                   //dd($violation->getMessage());
                 }
                // return $this->render('Register/registerfail.html.twig',['registerfail' => $errorMessages]);
                 return $this->render('Register/register.html.twig',['errors' => $errorMessages,'registerinfo' => $form->createView()]);
                 
                 
-            }
+            }            
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($urs);
             $entityManager->flush();
@@ -103,7 +113,7 @@ class RegisterController extends AbstractController
                 'Your post was added'
                 );
             
-            return $this->redirectToRoute('app_register');
+            return $this->redirectToRoute('dssnacker_login');
            
             //return $this->redirectToRoute('app_register1');
         }

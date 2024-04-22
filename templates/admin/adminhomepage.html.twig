@@ -1,0 +1,146 @@
+{% extends 'base.html.twig' %}
+{% block javascript %}
+
+{% endblock %}
+
+{% block body %}
+
+        <div><h3><center><b>{{ admininfo }}</b><center></h3></div>
+      
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<style>
+
+.blink-text{
+		color: #fff;
+		font-weight: bold;
+		font-size: 14px;
+		animation: blinkingText 2s infinite;
+		animation: blinkingBackground 2s infinite;
+		padding: 2px 4px;
+		display: inline-block;
+		border-radius: 5px;
+	}
+	@keyframes blinkingText{
+		0%		{ color: #10c018;}
+		25%		{ color: #1056c0;}
+		50%		{ color: #ef0a1a;}
+		75%		{ color: #254878;}
+		100%	{ color: #04a1d5;}
+	}
+	@keyframes blinkingBackground{
+		0%		{ background-color: #10c018;}
+		25%		{ background-color: #1056c0;}
+		50%		{ background-color: #ef0a1a;}
+		75%		{ background-color: #254878;}
+		100%	        { background-color: #04a1d5;}
+	}
+
+</style>
+ <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.0.min.js">    </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js">   </script>
+
+<script>
+window.onload = function() {
+		var data = $("#graphicdata").val();
+		var jsonData = JSON.parse(data);
+		let labels = [];
+		values = [];
+        
+            for (i = 0; i < jsonData.length; i++) {
+                labels.push(jsonData[i].label);
+                values.push(jsonData[i].y);
+            }
+		new Chart(document.getElementById("bar-chart"), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: "Population (millions)",
+                            backgroundColor: ["#3e95cd",
+                                              "#8e5ea2", 
+                                              "#3cba9f", 
+                                              "#e8c3b9", 
+                                              "#c45850",
+                                              "#CD5C5C", 
+                                              "#40E0D0",
+                                              "#c45850",
+                                              "#CD5C5C", 
+                                              "#40E0D0"],
+                            data: values
+                        }
+                    ]
+                },
+                options: {
+                
+                    legend: { 
+                    		display: false },
+                    title: {
+                        display: true,
+                        text: 'Vendor (vs) Sales Percentage'
+                    },
+                    
+                }
+
+	});
+}
+</script>
+         {% for message in app.flashes('assignmentsuccess')  %}
+        <div class="alert alert-primary mt-5 text-center">
+            {{ message }}
+        </div>
+    {% endfor %}
+         <div class="container">   
+         <div class="row">
+                  <p><b>Employee Details</b></p>
+         </div>
+         <div class="row">
+         <input type="hidden" id="graphicdata" value="{{ percent }}" />
+         <div class="col-md-3  mr-3 p-3 grad1" style="border-radius:10px;text-align:center;border-style: solid;">
+                  <i class="fa-solid fa-users fa-2xl"></i><br>
+            Employees<br>
+      
+         <b>{{ emparray.employeecount }}</b>
+         </div>
+         <div class="col-md-3 mr-3 ml-5 p-3 grad2" style="border-radius:10px;text-align:center;border-style: solid;">
+         <i class="fa-solid fa-user fa-2xl"></i><br>
+         Number of Users:<br>
+         {{ emparray.usercount }}
+         </div>
+         <div class="col-md-3 mr-3 p-3 ml-5 grad3" style="border-radius:10px;text-align:center;border-style: solid;">
+         <i class="fa-solid fa-user-pilot-tie  fa-2xl"></i><br>
+         Number of Admins:<br>
+         {{ emparray.admincount }}
+         </div>
+         </div>
+         <br/>
+          <div class="row">
+         <p><b>Today Assigned Snack</b> ( <b class="blink-text">{{ snackname }}</b> )</p>
+         </div>
+         <div class="row">
+                  <p><b>Today Selection Details</b></p>
+         </div>
+         <div class="row">
+         <div class="col-md-3  mr-3 p-3 grad3" style="border-radius:10px;text-align:center;border-style: solid;">
+         <i class="fa-solid fa-thumbs-up fa-2xl"></i><br>
+            Yes<br>
+      
+         <b>{{ selectionarray.yescount }}</b>
+         </div>
+         <div class="col-md-3 mr-3 ml-5 p-3 grad4" style="border-radius:10px;text-align:center;border-style: solid;">
+         <i class="fa-solid fa-thumbs-down fa-2xl"></i><br>
+         No<br>
+         {{ selectionarray.nocount }}
+         </div>
+         <div class="col-md-3 mr-3 p-3 ml-5 grad5" style="border-radius:10px;text-align:center;border-style: solid;">
+         <i class="fa-solid fa-face-meh-blank fa-2xl"></i><br>
+         No Response:<br>
+         {{ selectionarray.noresponsecount }}
+         </div>
+         </div>
+        <canvas id="bar-chart" width="200" height="200">
+    </canvas>
+         
+         
+{% endblock %}

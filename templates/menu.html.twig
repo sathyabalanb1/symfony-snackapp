@@ -1,0 +1,23 @@
+<div class="header-right">
+    {% set roleid = app.session.get('roleid') %}
+        {% if roleid is null %}
+        {% else %}
+         {% if roleid == 1 %}
+        
+            {% include 'loggedinoptions.html.twig' %}
+
+    {% else %}
+    
+	    {% include 'userloggedinoptions.html.twig' %}
+	    
+	{% endif %}
+{% endif %}
+    {% set logged = app.session.get('logged') %}
+    
+    {% if logged != true %}
+    
+    {% include 'loggedoutoptions.html.twig' %}
+	
+   {% endif %}
+
+</div>

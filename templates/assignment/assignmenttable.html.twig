@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Assignment Table{% endblock %}
+{% block stylesheets %}
+
+{% endblock %}
+{% block body %}
+
+<div class="assignmentlist">
+<center><p style="font-weight:bold;color:green;font-size:150%;">Assignment Details</p></center>
+{% set i = 0 %}
+<div class="container">
+<div class="row">
+<div class="col-lg-12">
+<table class="table table-bordered">
+<thead class="table-info">
+<tr>
+<th>Sl.No</th><th>Assigned Date</th><th>Assigned Snack</th><th>Purchased Vendor</th>
+</tr>
+
+</thead>
+<tbody>
+{% for assignment in assignments %} 
+
+     {% set i = i + 1 %}
+
+<tr class="table-primary">
+<td>{{i}}</td>
+<td>{{assignment.presentdate |date('d-m-Y') }}</td>
+<td>{{assignment.snack.getSnackname()}}</td>
+<td>{{assignment.vendor.getVendorname()}}</td>
+
+</tr>
+{% endfor %}
+</tbody>
+
+
+</table>
+</div>
+</div>
+</div>
+
+
+</div>
+
+{% endblock %}

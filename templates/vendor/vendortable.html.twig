@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vendor Table{% endblock %}
+
+{% block stylesheets %}
+<style>
+.vendorlist {
+
+   background:Cornsilk;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+{% for message in app.flashes('vendoraddsuccess') | default('') %}
+        
+       <span class="alert alert-primary">{{ message }}</span>
+
+{% endfor %}
+    
+<div>
+{% set i = 0 %}
+<center><p style="font-weight:bold;color:green;font-size:150%;">Vendor Details</p></center>
+<div class="container">
+<div class="row">
+<div class="col-lg-12">
+<table  class="table table-bordered">
+<thead class="table-info">
+<tr>
+<th>Sl.No</th><th>Vendor Name</th><th>Vendor Location</th><th>Contact Number</th>
+</tr>
+
+</thead>
+
+<tbody>
+{% for vendor in vendors %}
+
+     {% set i = i + 1 %}
+
+<tr>
+<td class="table-primary">{{i}}</td>
+<td class="table-primary">{{vendor.vendorname}}</td>
+<td class="table-primary">{{vendor.vendorlocation}}</td>
+<td class="table-primary">{{vendor.cnumber}}</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+
+</table>
+</div>
+</div>
+</div>
+
+
+</div>
+
+{% endblock %}

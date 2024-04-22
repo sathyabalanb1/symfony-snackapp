@@ -75,4 +75,23 @@ class SnacksRepository extends ServiceEntityRepository
         ;
     }
     */
+    public function findSnackname (int $snackid):array
+    {
+        $entityManager = $this->getEntityManager();
+       /*  $query = $entityManager->createQuery(
+            'SELECT p
+            FROM App\Entity\Product p
+            WHERE p.price > :pce
+            ORDER BY p.price ASC'
+            )->setParameter('pce', $price); */
+        
+        $query = $entityManager-> createQuery(
+            'select s.snackname 
+             FROM App\Entity\Snacks s 
+             where s.id=:snk'
+             )->setParameter('snk',$snackid);
+        
+        return $query->getResult();
+    }
+    
 }

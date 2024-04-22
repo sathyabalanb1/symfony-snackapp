@@ -3,7 +3,9 @@
 {% block title %}Log in!{% endblock %}
 
 {% block body %}
-<form method="post">
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 30vh;">
+<form method="post" class="border shadow p-3 rounded" style="width:450px;margin-top:10px;">
      {% if error %}
         <div class="alert alert-danger">{{ error }}</div>
     {% endif %}
@@ -13,29 +15,39 @@
             You are logged in as {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
         </div>
     {% endif %}
+     
+       <span class="form-error-message" style="font-weight: bold;color:red;"><center>{{ invalidlogin | default('') }}</center></span>
+    
+    <ul>
+    {% for field, errorMessage in errors | default('')%}
+       {# <li>{{ errorMessage }}</li><br> #}
+       <span class="invalid-feedback d-block">
+       <span class="d-block">
+       <span class="form-error-icon badge badge-danger text-uppercase">Error</span>
+       <span class="form-error-message">{{ field }}:{{ errorMessage }}</span>
+       </span>
+       </span>
+    {% endfor %}
+    </ul>
+    
+ 
 
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="inputEmployeename">Employeename</label>
-    <input type="text" value="{{ last_username }}" name="username" id="inputEmployeename" class="form-control" autocomplete="username" required autofocus>
-    <label for="inputPassword">Password</label>
-    <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+   <center><img src="{{ asset('images/loginlogo.png') }}"  style="height:76px;" /></center><br>
+    <label for="inputEmployeename"><b>Email ID</b></label>
+    <input type="text" value="{{ last_username }}" name="username" id="inputEmployeename" class="form-control" style="width:400px;" autocomplete="username" maxlength="30" autofocus>
+    <br>
+    
+    <label for="inputPassword"><b>Password</b></label>
+    <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" minlength="7" maxlength="12" style="width:400px;">
 
     <input type="hidden" name="_csrf_token"
            value="{{ csrf_token('authenticate') }}">
 
-    {#
-        Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
-        See https://symfony.com/doc/current/security/remember_me.html
-
-        <div class="checkbox mb-3">
-            <label>
-                <input type="checkbox" name="_remember_me"> Remember me
-            </label>
-        </div>
-    #}
-
-    <button class="btn btn-lg btn-primary" type="submit">
+    
+<br>
+    <center><button class="btn btn-lg btn-primary" type="submit">
         Sign in
-    </button>
+    </button></center>
 </form>
+</div>
 {% endblock %}

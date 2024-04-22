@@ -1,0 +1,39 @@
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 30vh;">
+    
+   <div class="border shadow p-3 rounded"> 
+    
+    <form method="post">
+    
+    
+    {% if app.session %}
+    
+         Hi <span style="font-weight:bold;color:dodgerblue;">{{ app.session.get('employeename') }}</span>
+        
+{% endif %} 
+
+    {% if error %}
+        <div class="alert alert-danger">{{ error}}</div>
+    {% endif %}
+    
+    <center><p style="color:green;"><b>Choose Your Snack</b></p></center>
+    <label for="pdate">Todays Date:</label>
+    <input type="text" value="{{ presentdate }}" name="pdate" id="pdate" class="form-control" autocomplete="email" style="width:400px;"readonly required autofocus>
+    <br>
+    <label for="tsnack">Todays Snack</label>
+    <input type="text" name="tsnack" value="{{snackinfo[0].snackname|default('')}}" id="tsnack" class="form-control" autocomplete="current-password" style="width:400px;" readonly required>
+    <br>
+    <input type="radio" id="yes" name="myselection" value="1" >
+    <label for="yes">Yes</label><br>
+    <input type="radio" id="no" name="myselection" value="0">
+    <label for="no">No</label><br>
+
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}" >
+
+    
+        <input type="hidden" value="{{ app.session.get('assignmentid') }}" name="assignmentid" id="assignment" class="form-control" autofocus>
+    <center><button class="btn btn-lg btn-primary mt-3" type="submit">
+        Submit
+    </button></center>
+</form>
+</div>
+</div>

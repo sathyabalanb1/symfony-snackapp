@@ -10,6 +10,17 @@ use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\Snackassignment;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Snacks;
+use App\Repository\SnacksRepository;
+use App\Entity\Selection;
+use App\Entity\Roles;
+use App\Entity\Users;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\PropertyAccess\PropertyAccess;
+
+
+
 
 
 class ChooseSnackController extends AbstractController
@@ -23,72 +34,148 @@ class ChooseSnackController extends AbstractController
             'controller_name' => 'ChooseSnackController',
         ]);
     }
-    /**
-     * @Route("/dssnacklogin", name="dssnacker_login")
-     */
-    public function loginsnack(AuthenticationUtils $authenticationUtils,Request $request,LoggerInterface $logger): Response
-    {
-        // dd($request);
-        if($request->request->get("_csrf_token")){
-            $token = $request->request->get("_csrf_token");
-            if (!$this->isCsrfTokenValid('authenticate', $token)) {
-                
-                $logger->info("CSRF failure");
-                
-                return new Response("Operation not allowed", Response::HTTP_OK,
-                    ['content-type' => 'text/plain']);
-            }
-            $email = $request->request->get("username");
-            $pwd = $request->request->get("password");
-            
-            $reclogin = $this->getDoctrine()->getRepository(Users::class)->findOneBy([
-                'username' => $email,
-                'password' => $pwd,
-            ]);
-            if($reclogin){
-                $session = new Session();
-                $session->set('id', $email);
-            }
-            else {
-                return $this->render('security/login.html.twig',['last_username' => 'Diwa', 'error' => 'Invalid Login Credentials']);
-            }
-            //  return $this->redirectToRoute('dssnacker_login');
-            
-            //  dd($reclogin);
-        }
-        else{
-            return $this->render('security/login.html.twig',['last_username' => 'Diwa', 'error' => '']);
-        }
-    }
+    
     /**
      * @Route("/snackdetails", name="snacks_info")
      */
-    public function chooseSnack(Request $request,ManagerRegistry $doctrine, SnackassignmentRepository $assignmentreposit): Response
+    public function chooseSnack(Session $session,Request $request,ManagerRegistry $doctrine, SnackassignmentRepository $assignmentreposit, ValidatorInterface $validator): Response
     {
        // $assignment = $doctrine->getRepository(Snackassignment::class)->findBy(array('presentdate'=>date('Y-m-d')));
-       $assignment = $doctrine->getRepository(Snackassignment::class)->findAssignmentdetails();
-      foreach($assignment as $k=>$v){
-         // dd($v->getId());
-         
-          dd($v->getSnack()->getId());
-      }
-       dd($assignment);
+       
+        $logged=$this->get('session')->get('logged');
         
-        //$snackid = $assignment->request->get('snackid');
+        $roleid=$this->get('session')->get('roleid');
         
-        
-        
-       // dd($snackid);
-        
-       // $snackname = $doctrine->getRepository(Snacks::class)->findSnackname();
-        
-      //  $assignmentdate= $doctrine->getRepository(Snackassignment::class)->findAssigneddate();
-      
-        if (!$product) {
-            throw $this->createNotFoundException(
-                'No product found for id '.$id
-                );
+        if($logged!=true && $roleid!=1)
+        {
+            return $this->redirectToRoute('dssnacker_login');
+            
         }
-        return $this->render('Prod/product.html.twig',['productinfo' => $product]);
+        
+       $assignment = $doctrine->getRepository(Snackassignment::class)->findAssignmentdetails();
+              
+              
+       date_default_timezone_set("Asia/Kolkata");
+       
+       $predefinedtime=strtotime("today 06:30 pm");
+       
+       $currenttime=time();
+       
+       if($currenttime>=$predefinedtime)
+       {
+           return $this->render('choose_snack/choosesnack.html.twig', ['presentdate' => '', 'snackinfo'=>'','selectionerror'=>'', 'error'=>'Time Is Over to Choose the Snack']);
+       }
+       
+       $userid=$this->get('session')->get('userid');
+      if(count($assignment)==0)
+      {
+          return $this->render('choose_snack/nosnack.html.twig', ['error'=>'Today Snack is Not Yet Assigned']);      
+      }
+      else{
+          $currentdate=date('Y-m-d');
+          $selection = $doctrine->getRepository(Selection::class)->fetchSelectiondetails($userid, $currentdate);
+          foreach($assignment as $k=>$v){
+              // dd($v->getId());
+              $assignmentid=$v->getId();
+            
+              
+           //   $session->set('assignmentid',$assignmentid);
+              $this->get('session')->set('assignmentid', $assignmentid);
+              
+              $snackid=$v->getSnack()->getId();
+              $sname=$v->getSnack()->getSnackname();
+             // $session->set('snackname',$sname);
+              $this->get('session')->set('snackname', $sname);
+              
+              $presentdate=$v->getPresentdate();
+              break;
+          }
+          
+          $pdate= $presentdate->format('d-m-Y');
+          
+          if(count($selection)==1)
+          {
+          foreach($selection as $k=>$v)
+          {
+           // $assignmentid= $v->getAssignment()->getId();             
+             $selectionvalue = $v->getIsselected();
+             return $this->render('choose_snack/changeselection.html.twig', ['value' => $selectionvalue]);  
+          }
+          }
+          $snackname = $doctrine->getRepository(Snacks::class)->findSnackname($snackid);
+          
+          
+          if($request->request->get('pdate') != ''){
+              $selection = new Selection();
+              $selection->setCreatedtime(new \DateTime());
+              $selection->setAssignment($this->getDoctrine()->getManager()->getReference(Snackassignment::class,$assignmentid));
+              $selection->setUser($this->getDoctrine()->getManager()->getReference(Users::class,$userid));
+              $selectionvalue = $request->request->get("myselection");
+              
+              if($selectionvalue == '')
+              {
+                  $selectionerror="Please Choose Yes or No for the Snack";
+                  return $this->render('choose_snack/choosesnack.html.twig',['presentdate' => $pdate,'snackinfo'=>$snackname,'selectionerror' => $selectionerror,'error' => '']);
+                  
+              }            
+              
+              $selection->setIsselected($selectionvalue);
+              $entityManager = $this->getDoctrine()->getManager();
+              $entityManager->persist($selection);
+              $entityManager->flush();
+              $this->addFlash(
+                  'choosesnacksuccess',
+                  'Snack Assignment is Completed Successfully'
+                  );
+              return $this->redirectToRoute('snacks_info');
+              
+           }
+      return $this->render('choose_snack/choosesnack.html.twig', ['presentdate' => $pdate, 'snackinfo'=>$snackname,'selectionerror'=>'', 'error'=>'']);  
+      }
+     
+     }
+     /**
+      * @Route("/updatechoice", name="snacks_edit_no")
+      */
+     public function updateTono (ManagerRegistry $doctrine,Request $req)
+     {
+         date_default_timezone_set("Asia/Kolkata");
+         
+         $predefinedtime=strtotime("today 09:50 pm");
+         
+         $currenttime=time();
+         //dd($req);
+         
+         if($currenttime>=$predefinedtime)
+         {
+             return $this->render('choose_snack/choosesnack.html.twig', ['presentdate' => '', 'snackinfo'=>'', 'error'=>'Time Is Over to Choose the Snack']);
+         }
+         $userid=$this->get('session')->get('userid');
+         $assignmentid=$this->get('session')->get('assignmentid');
+         $selection = $doctrine->getRepository(Selection::class)->updateNochoice($userid, $assignmentid);
+        // return $this->render('choose_snack/choosesnack.html.twig', ['presentdate' => '', 'snackinfo'=>'', 'error'=>'Your Choice is Submitted Successfully','selectionerror'=>'']);
+        return $this->redirectToRoute('snacks_info');   
+     }
+     
+     /**
+      * @Route("/editchoice", name="snacks_edit_yes")
+      */
+     public function updateToyes (ManagerRegistry $doctrine)
+     {
+         date_default_timezone_set("Asia/Kolkata");
+         
+         $predefinedtime=strtotime("today 08:00 pm");
+         
+         $currenttime=time();
+         
+         if($currenttime>=$predefinedtime)
+         {
+             return $this->render('choose_snack/choosesnack.html.twig', ['presentdate' => '', 'snackinfo'=>'', 'error'=>'Time Is Over to Choose the Snack','selectionerror'=>'']);
+         }
+         $userid=$this->get('session')->get('userid');
+         $assignmentid=$this->get('session')->get('assignmentid');
+         $selection = $doctrine->getRepository(Selection::class)->updateYeschoice($userid, $assignmentid);
+      //   return $this->render('choose_snack/choosesnack.html.twig', ['presentdate' => '', 'snackinfo'=>'', 'error'=>'Your Choice is Submitted Successfully','selectionerror'=>'']);
+      return $this->redirectToRoute('snacks_info'); 
      }
 }

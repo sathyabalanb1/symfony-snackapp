@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Choose Your Snack{% endblock %}
+
+{% block stylesheets %}
+<style>
+
+.flash-notice { color: red } 
+
+</style>
+{% endblock %}
+
+{% block body %}
+
+{% for message in app.flashes('choosesnacksuccess') %}
+        <div class="alert alert-primary mt-5 text-center">
+            {{ message }}
+        </div>
+{% endfor %}
+      
+    
+    
+    
+   {% include '/choose_snack/choosesnackform.html.twig' %}
+    
+{% endblock %}

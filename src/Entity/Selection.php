@@ -97,7 +97,7 @@ class Selection
         return $this;
     }
 
-    public function getIsselected(): ?bool
+    public function getIsselected(): ?int
     {
         return $this->isselected;
     }
